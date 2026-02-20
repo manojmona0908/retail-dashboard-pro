@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* ================= BACKGROUND ================= */
+.ai-bg {
+    background: linear-gradient(-45deg,#0f172a,#1e3a8a,#312e81,#0f172a);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    padding: 25px;
+    border-radius: 20px;
+}
+
+@keyframes gradientMove {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* ================= CARDS ================= */
+.hero-card, .result-card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    backdrop-filter: blur(8px);
+}
+
+.result-card {
+    margin-top:20px;
+}
+
+/* ================= METER ================= */
+.meter {
+    font-size: 32px;
+    font-weight: bold;
+    transition: 0.4s;
+}
+
+/* LIVE GLOW */
+.glow-low { box-shadow:0 0 20px rgba(25,135,84,0.6);}
+.glow-med { box-shadow:0 0 20px rgba(255,193,7,0.7);}
+.glow-high { box-shadow:0 0 25px rgba(220,53,69,0.8);}
+
+/* HIGH RISK PULSE */
+.pulse {
+    animation:pulseAnim 1s infinite;
+}
+
+@keyframes pulseAnim {
+    0%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+    100%{transform:scale(1);}
+}
+
+/* ================= SEGMENT ================= */
+.segment {
+    padding:6px 18px;
+    border-radius:20px;
+    font-weight:bold;
+    display:inline-block;
+    font-size:14px;
+}
+
+.low{background:#198754;color:white;}
+.medium{background:#ffc107;color:black;}
+.high{background:#dc3545;color:white;}
+
+#gaugeChart {
+    max-width:220px;
+    margin:auto;
+}
+
+/* ================= NETFLIX STYLE CARDS ================= */
+.reco-row {
+    display:flex;
+    gap:15px;
+    overflow-x:auto;
+    padding:10px 0;
+}
+
+.reco-card {
+    min-width:220px;
+    background:#111827;
+    color:white;
+    border-radius:12px;
+    padding:15px;
+    transition:0.3s;
+}
+
+.reco-card:hover {
+    transform: scale(1.06);
+}
+
+.reco-title {
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+</style>
+
+
+<div class="ai-bg">
+
+<h2 class="mb-3 text-white">🤖 AI Customer Churn Intelligence</h2>
+
+<div class="hero-card">
+
+<form method="POST" action="/predict_churn">
+
+    <div class="mb-3">
+        <label>Recency (days since last purchase)</label>
+        <input type="number" name="recency" class="form-control"
+        placeholder="Example: 30" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Frequency (number of purchases)</label>
+        <input type="number" name="frequency" class="form-control"
+        placeholder="Example: 5" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Monetary (average spend ₹)</label>
+        <input type="number" name="monetary" class="form-control"
+        placeholder="Example: 1200" required>
+    </div>
+
+    <button class="btn btn-primary w-100">Analyze Customer</button>
+
+</form>
+
+</div>
+
+
+{% if churn_prob is not none %}
+
+<div id="resultCard" class="result-card text-center">
+
+    <h5>Churn Probability</h5>
+
+    <div id="probabilityMeter" class="meter">0%</div>
+
+    <div class="mt-2">
+
+        {% if churn_prob < 30 %}
+            <span class="segment low">Low Risk</span>
+        {% elif churn_prob < 70 %}
+            <span class="segment medium">Medium Risk</span>
+        {% else %}
+            <span class="segment high">High Risk</span>
+        {% endif %}
+
+    </div>
+
+    <canvas id="gaugeChart" class="mt-3"></canvas>
+
+    <!-- NETFLIX STYLE ACTION CARDS -->
+    <h5 class="mt-4 mb-3">🎯 AI Recommended Actions</h5>
+
+    <div class="reco-row">
+
+        {% if churn_prob < 30 %}
+        <div class="reco-card">
+            <div class="reco-title">Loyalty Boost</div>
+            Reward repeat purchases.
+        </div>
+        <div class="reco-card">
+            <div class="reco-title">Referral Campaign</div>
+            Encourage word-of-mouth growth.
+        </div>
+        {% elif churn_prob < 70 %}
+        <div class="reco-card">
+            <div class="reco-title">Personalized Offer</div>
+            Send targeted discount coupon.
+        </div>
+        <div class="reco-card">
+            <div class="reco-title">Engagement Email</div>
+            Win-back campaign sequence.
+        </div>
+        <div class="reco-card">
+            <div class="reco-title">Survey</div>
+            Identify dissatisfaction early.
+        </div>
+        {% else %}
+        <div class="reco-card">
+            <div class="reco-title">URGENT Retention Call</div>
+            High probability customer.
+        </div>
+        <div class="reco-card">
+            <div class="reco-title">Premium Offer</div>
+            Exclusive discount + bonus.
+        </div>
+        <div class="reco-card">
+            <div class="reco-title">Dedicated Support</div>
+            Assign relationship manager.
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+let target={{ churn_prob }};
+let meter=document.getElementById("probabilityMeter");
+let card=document.getElementById("resultCard");
+
+let counter=0;
+let anim=setInterval(()=>{
+
+    if(counter>=target){clearInterval(anim);}
+    else{
+        counter++;
+        meter.innerText=counter+"%";
+
+        if(counter<30){
+            meter.style.color="#198754";
+            card.classList.add("glow-low");
+        }
+        else if(counter<70){
+            meter.style.color="#ffc107";
+            card.classList.add("glow-med");
+        }
+        else{
+            meter.style.color="#dc3545";
+            card.classList.add("glow-high");
+            card.classList.add("pulse");
+        }
+    }
+
+},15);
+
+
+// GAUGE
+new Chart(document.getElementById('gaugeChart'),{
+type:'doughnut',
+data:{
+datasets:[{
+data:[{{ churn_prob }},100-{{ churn_prob }}],
+backgroundColor:[
+"{{ '#198754' if churn_prob<30 else '#ffc107' if churn_prob<70 else '#dc3545' }}",
+"#e9ecef"
+],
+borderWidth:0
+}]
+},
+options:{
+circumference:180,
+rotation:270,
+cutout:"70%",
+plugins:{legend:{display:false}}
+}
+});
+
+</script>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

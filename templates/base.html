@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Retail Intelligence Hub</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body {
+    background: #f4f6f9;
+    margin: 0;
+}
+
+/* ===== TOP NAVBAR ===== */
+.topbar {
+    height: 60px;
+    background: #111827;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.topbar h4 {
+    margin: 0;
+    margin-left: 15px;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: #1f2937;
+    transition: all 0.3s ease;
+    padding-top: 60px;
+    z-index: 1000;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background: #374151;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+/* ===== PAGE CONTENT ===== */
+.content {
+    margin-top: 60px;
+    padding: 30px;
+}
+
+/* ===== CARD STYLE ===== */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <i class="fas fa-bars fa-lg" onclick="toggleSidebar()" style="cursor:pointer;"></i>
+    <h4>Retail Intelligence Hub</h4>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <a href="/">🏠 Home</a>
+    <a href="/retail_dashboard">📊 Retail Dashboard</a>
+    <a href="/customer_dashboard">👥 Customer Dashboard</a>
+    <a href="/churn">🔁 Churn</a>
+    <a href="/promotion">📣 Promotion</a>
+    <a href="/forecast">📈 Forecast</a>
+    <a href="/nlp">🧠 NLP</a>
+    <a href="/about">ℹ About</a>
+
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+<script>
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

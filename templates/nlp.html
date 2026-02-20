@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">Customer Review Intelligence (NLP)</h2>
+
+<div class="card p-4 mb-4">
+    <form method="POST" action="/analyze_sentiment">
+
+        <div class="mb-3">
+            <label class="form-label">Enter Customer Review</label>
+            <textarea name="review" class="form-control" rows="4"
+                placeholder="Type a product review here..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-danger">
+            Analyze Sentiment
+        </button>
+
+    </form>
+</div>
+
+{% if sentiment %}
+<div class="card p-4 mb-4 text-center">
+
+    <h4>Prediction: {{ sentiment }}</h4>
+    <h5>Confidence: {{ probability }}%</h5>
+
+    <div class="progress mt-3">
+        <div class="progress-bar 
+            {% if 'Positive' in sentiment %} bg-success {% else %} bg-danger {% endif %}"
+            style="width: {{ probability }}%">
+        </div>
+    </div>
+
+</div>
+{% endif %}
+
+{% endblock %}

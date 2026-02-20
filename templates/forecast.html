@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Demand Forecast</h2>
+
+<div class="card p-4 mb-4">
+
+    <form method="POST" action="/generate_forecast">
+
+        <div class="mb-3">
+            <label>Enter Number of Days</label>
+            <input type="number" name="days" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-warning">
+            Generate Forecast
+        </button>
+
+    </form>
+
+</div>
+
+{% if forecast %}
+<div class="card p-4">
+
+    <h5>Daily Forecast:</h5>
+
+    <ul class="list-group mb-4">
+        {% for item in forecast %}
+            <li class="list-group-item">
+                Day {{ item.day }} → ₹ {{ item.value }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <img src="data:image/png;base64,{{ graph }}" class="img-fluid">
+
+</div>
+{% endif %}
+
+{% endblock %}

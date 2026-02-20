@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+/* ======================= HERO SECTION ======================= */
+
+.hero {
+
+    height: 85vh;
+    border-radius: 25px;
+    overflow: hidden;
+    position: relative;
+
+    /* RETAIL BACKGROUND IMAGE */
+    background:
+        linear-gradient(
+            rgba(10,20,45,0.75),
+            rgba(10,20,45,0.75)
+        ),
+        url("https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1600&q=80");
+
+    background-size: cover;
+    background-position: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+
+/* ======================= CONTENT ======================= */
+
+.hero-content {
+    color: white;
+    max-width: 800px;
+    padding: 40px;
+}
+
+.hero-title {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-size: 28px;
+    font-weight: 300;
+    opacity: 0.95;
+    margin-bottom: 30px;
+}
+
+.hero-desc {
+    font-size: 20px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+</style>
+
+
+<!-- ======================= HERO ======================= -->
+
+<div class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-title">🛒 RetailSense</div>
+
+        <div class="hero-subtitle">
+            AI Powered Retail Intelligence Platform
+        </div>
+
+        <div class="hero-desc">
+            Transform retail decisions using AI-driven customer analytics,
+            smart forecasting, churn prediction and real-time business insights —
+            all from one intelligent system.
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

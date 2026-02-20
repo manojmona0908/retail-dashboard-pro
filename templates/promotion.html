@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.kpi-card {
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    background: white;
+    transition: 0.3s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+}
+
+.kpi-value {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.growth-positive {
+    color: #198754;
+    font-weight: bold;
+}
+
+.growth-negative {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.sim-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+</style>
+
+<h2 class="mb-4">🚀 Promotion Effectiveness Simulator</h2>
+
+<div class="sim-card mb-4">
+
+    <form method="POST" action="/predict_promotion">
+
+        <div class="mb-3">
+            <label>Promotion Applied</label>
+            <select name="promo" class="form-control">
+                <option value="0">No Promotion</option>
+                <option value="1">Promotion Applied</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Discount (0 to 1)</label>
+            <input type="number" step="0.01" name="discount" class="form-control" placeholder="Example: 0.20" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            🚀 Simulate Revenue Impact
+        </button>
+
+    </form>
+
+</div>
+
+{% if sales %}
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="kpi-card text-center">
+            <p>Predicted Sales</p>
+            <div class="kpi-value text-primary">₹ {{ sales }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card text-center">
+            <p>Predicted Quantity</p>
+            <div class="kpi-value text-warning">{{ quantity }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card text-center bg-dark text-white">
+            <p>Total Revenue</p>
+            <div class="kpi-value">₹ {{ revenue }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card text-center">
+            <p>Revenue Change</p>
+
+            {% if growth > 0 %}
+                <div class="kpi-value growth-positive">
+                    +{{ growth }}%
+                </div>
+                <small>📈 Likely Increase due to Discount</small>
+            {% else %}
+                <div class="kpi-value growth-negative">
+                    {{ growth }}%
+                </div>
+                <small>⚠️ Revenue Drop Risk</small>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-4 p-4 bg-light rounded">
+
+    <h5>📊 Business Interpretation</h5>
+
+    {% if growth > 15 %}
+        This discount strategy is highly effective and significantly boosts revenue. Consider scaling this campaign.
+
+    {% elif growth > 5 %}
+        The promotion generates moderate revenue growth. Can be used selectively for specific customer segments.
+
+    {% elif growth > 0 %}
+        Small uplift observed. Might need optimization in discount % or targeting.
+
+    {% else %}
+        Discount is hurting profitability. Consider reducing discount depth or improving targeting.
+
+    {% endif %}
+
+</div>
+
+{% endif %}
+
+{% endblock %}
